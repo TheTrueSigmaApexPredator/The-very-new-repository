@@ -23,4 +23,19 @@ def ban_user(message):
     else:
         bot.reply_to(message, "Эта команда должна быть использована в ответ на сообщение пользователя, которого вы хотите забанить.")
 
+@bot.message_handler(func=lambda message: True)
+def echo_message(message):
+    if "https://" in message.text:
+        user_info = f"User {message.from_user.id} banned for: {message.text}"
+        print(user_info)
+        
+        try:
+            bot.ban_chat_member(message.chat.id, message.from_user.id)
+            bot.reply_to(message, f"@{message.from_user.username} забанен за ссылки!")
+        except:
+            bot.reply_to(message, "Ошибка бана!")
+        return
+    
+    bot.reply_to(message, message.text)
+
 bot.infinity_polling(none_stop=True)
